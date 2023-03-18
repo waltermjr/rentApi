@@ -1,19 +1,5 @@
 import mongoose from "mongoose";
-
-interface IClients {
-  id: string,
-  name: string,
-  mail: string,
-  registerNumber: string,
-  productRented: IProduct[]
-}
-
-interface IProduct {
-  id: string,
-  name: string,
-  rentedByClient: IClients[],
-  quantity: string
-}
+import { IClients } from "../types";
 
 const clientsSchema = new mongoose.Schema({
   id: {
@@ -27,15 +13,18 @@ const clientsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  phone: {
+    type: String,
+    required: true,
+  },
   registerNumber: {
     type: Number,
     required: true,
   },
-  productRented: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "products",
-    default: [],
-  }]
+  address: {
+    type: [mongoose.Schema.Types.Mixed],
+    required: true,
+  }
 })
 
 const clientsModel = mongoose.model<IClients>("clients", clientsSchema);

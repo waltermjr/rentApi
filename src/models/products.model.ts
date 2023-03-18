@@ -1,35 +1,27 @@
 import mongoose from "mongoose";
-
-interface IClients {
-  id: string,
-  name: string,
-  mail: string,
-  registerNumber: string,
-  productRented: IProduct[]
-}
-
-interface IProduct {
-  id: string,
-  name: string,
-  rentedByClient: IClients[],
-  quantity: string
-}
+import { IProduct } from "../types";
 
 const productsSchema = new mongoose.Schema({
   id: {
+    type: String,
+  },
+  foto: {
     type: String,
   },
   name: {
     type: String,
     required: true,
   },
-  rentedByClient: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "clients",
-    default: [],
-  }],
-  quantity: {
+  code: {
+    type: String,
+    required: true,
+  },
+  value: {
     type: Number,
+    require: true,
+  },
+  size: {
+    type: String,
     required: true,
   }
 });
