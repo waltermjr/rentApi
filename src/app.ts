@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Express } from "express";
 import db from './config/dbconnect';
 import routes from "./routes";
 
@@ -7,7 +7,7 @@ db.once("open", () => {
     console.log("DataBase connected!")
 });
 
-const app = express();
+const app: Express = express();
 app.use(express.json());
 routes(app);
 
