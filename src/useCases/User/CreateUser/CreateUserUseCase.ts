@@ -8,9 +8,8 @@ export class CreateUserUseCase implements IUseCase {
     private userRepository: IUserRepository
   ){}
 
-  async execute(dataUser: IUserDTO): Promise<void> {
+  async execute(dataUser: IUserDTO): Promise<void | Error> {
     const isEmailRegistered = await this.userRepository.findByEmail(dataUser.email)
-
     if(isEmailRegistered.length > 0){
       throw new Error("Usuário já cadastrado")
     }

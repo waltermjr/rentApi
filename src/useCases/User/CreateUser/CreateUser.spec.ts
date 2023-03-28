@@ -1,18 +1,33 @@
 import { CreateUserUseCase } from "./CreateUserUseCase"
-import { IUserRepository } from "../../../repositories/implementations/user/protocols/IUserRepository"
 import { IUserDTO } from "../protocols/UserDTO"
-import MongoUserRespository from "../../../repositories/implementations/user/mongo"
-
-jest.mock("../../../repositories/implementations/user/mongo/MongoUserRepository", jest.fn())
-jest.mock("./CreateUserUseCase")
-jest.mock("./")
-jest.spyOn(MongoUserRespository, "findByEmail").mockReturnValue(new Promise((resolve) => resolve([{ email: "", name: "", password: "" }])))
+import { MongoUserRespository } from "../../../repositories/implementations/user/mongo/MongoUserRepository"
+import request from 'supertest'
+import app from "../../../app"
 
 
 describe("Create User", () => {
-  test("Should user is created", async () => {
-    const sut = new CreateUserUseCase({} as IUserRepository)
-    sut.execute({ email: 'teste@gmail.com' } as IUserDTO)
-    expect(sut.execute).toHaveBeenLastCalledWith({ email: 'teste@gmail.com' })
+  
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+  
+  beforeEach(() => {
+    jest.resetModules()
+  })
+
+  test("Should user create error", async () => {
+    jest.spyOn(CreateUserUseCase.prototype, 'execute').mockImplementationOnce(() => Promise.reject(new Error('Usuário já cadastrado')))
+
+    const res = await request(app).post('/user')
+    expect(res.status).toEqual(400)
+    expect(res.body.message).toEqual('Error: Usuário já cadastrado - erro ao criar usuário')
+  })
+
+  test("Should user create success", async () => {
+    jest.spyOn(CreateUserUseCase.prototype, 'execute').mockImplementationOnce(() => Promise.resolve())
+
+    const res = await request(app).post('/user')
+    expect(res.status).toEqual(201)
+    expect(res.body.message).toEqual('Usuário criado com sucesso')
   })
 })
